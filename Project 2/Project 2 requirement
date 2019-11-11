@@ -1,0 +1,8 @@
+The requirements for this project are:
+• Select a dataset from data.gov (http://catalog.data.gov/dataset)
+• Your data must have both categorical variables and numerical variables
+• Find 3 interesting facts/patterns about the dataset ad present your findings with the use
+of graphics – at least two tables and at least three charts/graphs
+• Tell a story with the data
+• Work individually
+• Use the dplyr library to compare and contrast at least three categories
