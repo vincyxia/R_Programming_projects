@@ -1,7 +1,3 @@
-#Name: Wanxin Xia
-#Email: wxia@scu.edu
-#Date: 10/4/2019
-
 #1st step: Define 4 functions
 #First function:
 fibonacci <- function(user_number)
