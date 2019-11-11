@@ -1,0 +1,10 @@
+The requirements are:
+- Print out a menu of options, then query the user to select one.
+- Based on the user’s choice, calculate the following:
+- Calculate the first n Fibonacci numbers (where the user enters a number, n)
+- Print the numbers 1 to n, and print “Fizz” for mulitiples of 3, and “Buzz” for
+multiples of 5, and “FizzBuzz” for multiples of both (where the user enters a
+number, n)
+- Calculate the primes numbers up to n (where the user enters a number, n)
+- Create a vector of random numbers, each random number being between -50
+and 50, where the vector is n long (where the user enters a number, n)
