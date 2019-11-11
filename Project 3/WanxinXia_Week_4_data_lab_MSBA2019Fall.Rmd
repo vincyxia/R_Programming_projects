@@ -1,0 +1,136 @@
+---
+title: "Week 4 data Lab"
+author: "Wanxin Xia (wxia@scu.edu)"
+date: "10/26/2019"
+output: 
+  html_document:
+    number_sections: true
+    df_print: paged
+    theme: journal
+    code_folding: show
+---
+
+#Exercise 1:
+
+Set working directory/ path to prepare your computer to load the csv
+```{r exercise_1_1}
+library(dplyr)
+library(ggplot2)
+library(tidyverse)
+setwd("~/Documents/Santa Clara University/R Programing 2506/project/")
+```
+
+Load the csv file
+```{r exercise_1_2}
+data <- read.csv("data lab data.csv")
+```
+
+#Exercise 2:
+
+Check if the csv already have preset column and column names
+```{r exercise_2_1}
+names(data)
+```
+
+Check and print the total numbers of NA in the table and Nas form each column
+
+First, clean up data
+```{r clean_up_data}
+data <- data %>%
+  filter(row_number() != 1L) %>%
+  select(-(X)) %>%
+  rename(all_ma_1980 = ALL.METROPOLITAN.AREAS,
+         all_ma_1990 = X.1,
+         all_ma_2000 = X.2,
+         sel_ma_1980 = SELECTED.METROPOLITAN.AREAS,
+         sel_ma_1990 = X.3,
+         sel_ma_2000 = X.4)
+```
+
+Then, continue to process data
+```{r exercise_2_2}
+print(sum(is.na(data)))
+for (i in 2:ncol(data))
+  {n <- sum(is.na(data[i]))
+    print(paste("Column", i, "has", n, "NAs"))}
+```
+
+#Exercise 3:
+
+Make five separate sub-tables from the main table
+(dissimilar index, isolation index, delta index, absolute centralizing index and spatial proximity index)
+
+```{r exercise_3}
+dissim_data <- data %>%
+  filter(between(row_number(), which(grepl("Dissimilarity Index", data$Index.and.Race.Ethnicity))+1, which(grepl("Isolation Index", data$Index.and.Race.Ethnicity))-1))
+
+iso_data <- data %>%
+  filter(between(row_number(), which(grepl("Isolation Index", data$Index.and.Race.Ethnicity))+1, which(grepl("Delta Index", data$Index.and.Race.Ethnicity))-1))
+
+del_data <- data %>%
+  filter(between(row_number(), which(grepl("Delta Index", data$Index.and.Race.Ethnicity))+1, which(grepl("Absolute Centralization Index", data$Index.and.Race.Ethnicity))-1))
+
+ab_cen_data <- data %>%
+  filter(between(row_number(), which(grepl("Absolute Centralization Index", data$Index.and.Race.Ethnicity))+1, which(grepl("Spatial Proximity Index", data$Index.and.Race.Ethnicity))-1))
+
+spa_data <- data %>%
+  filter(between(row_number(), which(grepl("Spatial Proximity Index", data$Index.and.Race.Ethnicity))+1, n()))
+```
+
+#Exercise 4:
+
+Show basic summaries of the main table and all five sub tables
+
+You only need to do the means for the dissimilar index, and delta index in the exercise
+```{r exercise_4_dissim_data}
+dissim_data %>%
+  gather("all_ma_1980","all_ma_1990","all_ma_2000", key = "metro_year", value = "data1") %>%
+  gather("sel_ma_1980","sel_ma_1990","sel_ma_2000", key = "select_year", value = "data2") %>%
+  group_by(Index.and.Race.Ethnicity) %>%
+  summarise(mean_metro = mean(data1, na.rm = TRUE),
+            mean_sel = mean(data2, na.rm = TRUE))
+```
+
+
+```{r exercise_4_del_data}
+del_data %>%
+  gather("all_ma_1980","all_ma_1990","all_ma_2000", key = "metro_year", value = "data1") %>%
+  gather("sel_ma_1980","sel_ma_1990","sel_ma_2000", key = "select_year", value = "data2") %>%
+  group_by(Index.and.Race.Ethnicity) %>%
+  summarise(mean_metro = mean(data1, na.rm = TRUE),
+            mean_sel = mean(data2, na.rm = TRUE))
+```
+
+#Exercise 5:
+
+Make a graphic summary of the dissimilar index, do not include small multiples, just make simple plots, bar graph or visual representation of the dissimilar index
+```{r exercise_5_metro}
+dissim_data_new <- del_data %>%
+  gather("all_ma_1980","all_ma_1990","all_ma_2000", key = "metro_year", value = "data1") %>%
+  gather("sel_ma_1980","sel_ma_1990","sel_ma_2000", key = "select_year", value = "data2")
+
+ggplot(dissim_data_new) +
+  geom_line(aes(metro_year, data1, group = Index.and.Race.Ethnicity, color = Index.and.Race.Ethnicity)) +
+  theme(legend.position="bottom")
+
+
+```
+
+```{r exercise_5_select}
+ggplot(dissim_data_new) +
+  geom_line(aes(select_year, data2, group = Index.and.Race.Ethnicity, color = Index.and.Race.Ethnicity)) +
+  theme(legend.position="bottom")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
