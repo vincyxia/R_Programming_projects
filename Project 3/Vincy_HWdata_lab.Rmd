@@ -1,7 +1,7 @@
 ---
 title: "Week 4 data Lab"
-author: "Wanxin Xia (wxia@scu.edu)"
-date: "10/26/2019"
+author: "XXXXXX"
+date: "XXXXXX"
 output: 
   html_document:
     number_sections: true
