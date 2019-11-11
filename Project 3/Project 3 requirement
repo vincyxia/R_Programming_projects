@@ -1,0 +1,19 @@
+exercise 1:
+Download “lab3 dataset” from Camino or Github to a folder on your laptop Set working directory/ path to prepare your computer 
+to load the csv Load the csv file
+
+exercise 2:
+Check if the csv already have preset column and column names
+Check and print the total numbers of NA in the table and Nas form each column
+
+exercise 3:
+Make five separate sub-tables from the main table (dissimilar index, isolation index, delta index, absolute centralizing index and spatial
+proximity index)
+
+exercise 4:
+Show basic summaries of the main table and all five sub tables
+Include the mean of each category over time, for example, in the dissimilar index, the mean of Metropolitan Hispanic and Latino would be the mean of c(0.502, 0.5, 0.509)
+You only need to do the means for the dissimilar index, and delta index in the exercise
+
+exercise 5:
+Make a graphic summary of the dissimilar index, do not include small multiples, just make simple plots, bar graph or visual representation of the dissimilar index
