@@ -1,0 +1,110 @@
+---
+title: "WanxinXia_Project3_MSBA2019Fall"
+author: "Wanxin Xia"
+date: "11/8/2019"
+output: 
+  html_document:
+    number_sections: true
+    df_print: paged
+    toc: true
+    toc_float:
+      collapsed: true
+      smooth_scroll: true
+    toc_depth: 2
+    theme: journal
+    code_folding: show
+---
+
+#Introduction of dataset
+Socioeconomic indicators like the poverty rate, population change, unemployment rate, and education levels vary across the nation. ERS has compiled the latest data on these measures into a mapping and data display/download application that allows users to identify and compare States and counties on these indicators.
+
+And today, we focus on Unemployment and median household income for the U.S., States, and counties, 2007-18.
+
+*Sources: [Unemployment - Bureau of Labor Statistics - LAUS data](https://www.bls.gov/lau/)*
+
+#Preparation
+
+```{r preparation}
+setwd("~/Documents/Santa Clara University/R Programing 2506/project/project3/")
+library(readxl)
+library(tidyverse)
+data <- read_excel("Unemployment.xls", sheet = 1, skip = 6)
+```
+
+
+#First interesting pattern
+
+**Find the average unemployment rate across U.S. from 2007-2018, to see whether the trend of unemployment rate is decreasing or increasing**
+
+```{r avg_rate}
+data1 <- data %>%
+  select(State, Area_name, contains("Unemployment_rate_"))
+data1_1 <- data1 %>%
+  filter(!str_detect(Area_name, ",\\s[A-Z]{2}$"),
+         State != "US") %>%
+  distinct() %>%
+  summarise_all(list(mean = mean), na.rm = TRUE)
+data1_2 <- data1_1 %>%
+  gather(key = "year", value = "unemployment_rate") %>%
+  filter(str_detect(year, "^Un")) %>%
+  mutate(year_2 = as.numeric(substr(year, 
+                         nchar("Unemployment_rate_")+1,
+                         nchar("Unemployment_rate_")+4)))
+
+ggplot(data1_2, aes(year_2, unemployment_rate)) +
+  geom_line() + geom_point()
+
+```
+
+We can see from the graphics that an unemployment rate spike occured in 2009. This trending consists with the ression occured in 2008. And then, with the recovery of economy, unemployment rate gradually decreased.
+
+
+#Second interesting pattern
+
+**find the State which has the highest or the lowest unemployment rate across 2007-2018**
+
+```{r avg_state}
+data2_1 <- data1 %>%
+  filter(!str_detect(Area_name, ",\\s[A-Z]{2}$"),
+         State != "US") %>%
+  distinct() %>% 
+  gather(key = "year", value = "unemployment_rate", -State, -Area_name) %>%
+  mutate(year_2 = as.numeric(substr(year, 
+                         nchar("Unemployment_rate_")+1,
+                         nchar("Unemployment_rate_")+4)))
+data2_2 <- data2_1 %>%
+  group_by(State) %>%
+  summarise(mean = mean(unemployment_rate))
+
+print(paste(data2_2$State[which.max(data2_2$mean)], "has the highest unemployment rate"))
+print(paste(data2_2$State[which.min(data2_2$mean)], "has the lowest unemployment rate"))
+ggplot(data2_1 %>% filter(State %in% c("ND","PR")), aes(year_2, unemployment_rate, color = State)) +
+  geom_line() + geom_point()
+```
+
+We can see that the unemployment rate of PR is about 4 times of that of ND. The lowest unemployment rate of ND may attribute to the continuous growing in economy. 
+
+#Third interesting pattern
+
+**find the distribution of the income across U.S.**
+
+
+```{r income}
+ggplot(data, aes(Median_Household_Income_2017)) +
+  geom_histogram(bins = 50)
+```
+
+We can see that the distribution of income across the U.S. is right skewed, which is reasonable. Majority of people have the average level of income and few people have the extremely high income.
+
+
+
+
+
+
+
+
+
+
+
+
+
