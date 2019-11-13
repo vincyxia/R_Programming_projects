@@ -1,0 +1,259 @@
+---
+title: "WanxinXia_THMidterm_MSBA2019Fall"
+author: "Wanxin Xia (wxia@scu.edu)"
+date: "11/11/2019"
+output: 
+  html_document:
+    number_sections: true
+    df_print: paged
+    toc: true
+    toc_float:
+      collapsed: true
+      smooth_scroll: true
+    toc_depth: 2
+    theme: journal
+    code_folding: show
+---
+
+#Preparation
+
+```{r prep}
+library(tidyverse)
+```
+
+
+#Part 1
+##Load the data
+
+```{r load_data}
+data <- read.csv("titanic.csv")
+```
+
+##Delete columns
+
+Get rid of the following columns: 'Name', 'Ticket', 'PassengerId', 'Cabin'
+```{r del_col}
+data <- data %>%
+  select(-Name, -Ticket, -PassengerId, -Cabin)
+```
+
+##Replace
+
+Replace the ‘Sex column with a binary column for whether the passenger is ‘Male’
+```{r replace}
+data <- data %>%
+  mutate(Sex = ifelse(Sex == "male",1,0))
+```
+
+##Count NAs
+
+Show how many NA’s are in each column
+```{r count_NA}
+for (i in 1:ncol(data))
+  {n <- sum(is.na(data[i]))
+  print(paste("Colums", colnames(data)[i], "has", n ," NAs."))}
+```
+
+##NA review
+
+Which Column has the most NA’s? How many does it have?
+```{r NA_review}
+x <- c()
+for (i in 1:ncol(data))
+  {n <- sum(is.na(data[i]))
+  x[i] <- n }
+print(paste(colnames(data)[which.max(x)],"has the most NA. It has",x[which.max(x)],"NAs."))
+```
+
+
+##Bar chart
+
+Create a bar chart to show NA counts by column
+```{r bar_chart}
+a <- sapply(data, function(x) sum(is.na(x)))
+b <- colnames(data)
+data1 <- data.frame(x = b, y = a)
+ggplot(data1) +
+  geom_bar(aes(x,y), stat = "identity")
+```
+
+##Plot
+
+Show/plot the distribution of ages for each gender. Is the average (mean) age of Males higher? Is the median higher?
+```{r distribution}
+ggplot() +
+  geom_boxplot(data = data,mapping = aes(as.factor(Sex), Age)) +
+  geom_point(data = data %>% group_by(Sex) %>% summarise(mean = mean(Age, na.rm = TRUE)), mapping = aes(as.factor(Sex),mean), color = "red") +
+  labs(x = "Sex")
+```
+
+Male has the higher mean and median of ages.
+
+
+##Average fare
+Which port of origin (embarked column) had the highest average fare? Show/plot your results.
+```{r avg_fare}
+data %>%
+  filter(Embarked != "") %>%
+  group_by(Embarked) %>%
+  summarise(avg_fare = mean(Fare)) %>%
+  ggplot(aes(Embarked,avg_fare)) +
+  geom_bar(stat = "identity")
+```
+
+C port has the highest average fare.
+
+
+##Statistically significant difference
+Is there a statistically significant difference in average fares between the genders?
+```{r stat}
+t.test(data$Age[data$Sex == "1"],
+       data$Age[data$Sex == "0"])
+```
+
+Because P value is less than 0.05, there is a statistically significant difference in average fares between the genders.
+
+
+#Part 2
+##Load data frame
+
+```{r load}
+library(jsonlite)
+data2 <- readLines("bitly_usagov_example.txt")
+data2 <- stream_in(textConnection(data2))
+```
+
+##Data review
+
+How many records are there?
+```{r records}
+data2 %>%
+  filter(!is.na(a)) %>%
+  summarise(n = n())
+```
+
+##Count NAs
+In the City column (‘cy’), how many are NA?
+```{r num_NA}
+sum(is.na(data2$cy))
+```
+
+
+##Count countries
+How many countries are presented in this data? 
+```{r num_c}
+data2 %>%
+  filter(!is.na(c)) %>%
+  distinct(c) %>%
+  summarise(n = n()) 
+```
+71 countries are presented in this data.
+
+
+Which country (‘c’ column) has the most records? How many does it have?
+```{r max_c}
+data2 %>%
+  filter(!is.na(c)) %>%
+  group_by(c) %>%
+  summarise(n = n()) %>%
+  top_n(1)
+```
+US has the most records and it has 2305 records.
+
+
+##From Russia
+How many records are from Russia?
+```{r from_R}
+data2 %>%
+  filter(c == "RU") %>%
+  summarise(n = n()) 
+```
+
+
+##No USA
+How many records do NOT list USA
+```{r no_USA}
+data2 %>%
+  filter(!is.na(c),
+         c != "US") %>%
+  summarise(n = n())
+```
+
+
+##Recocrds search
+how many records have 'America' in the timezone, but Country not in US?
+```{r num_US}
+data2 %>%
+  filter(str_detect(tz, "^America"),
+         c != "US") %>%
+  summarise(n = n())
+```
+
+##Contains cia.gov
+How many records point to cia.gov?
+```{r cia}
+data2 %>%
+  filter(str_detect(u, "cia.gov")) %>%
+  summarise(n = n())
+```
+
+15 records point to cia.gov.
+
+##Fill records
+Fill empty records with “UNKNOWN” and NA’s with “MISSING”. Create a new csv. (Submit this csv with your R Notebook.)
+```{r fill}
+data2[is.na(data2)] <- "MISSING"
+data2[data2 == ""] <- "UNKNOWN"
+data2$ll <- as.character(data2$ll)
+write.table(data2,"data2.csv", sep = ",", row.names = FALSE)
+```
+
+
+##Plot
+Show the top 10 timezones (‘tz’ column) in a bar chart, with a legend, and properly labeled x,y axes and title.
+```{r tz_bar}
+data2 %>%
+  filter(tz != "MISSING" & tz != "UNKNOWN") %>%
+  group_by(tz) %>%
+  summarise(n = n()) %>%
+  arrange(desc(n)) %>%
+  top_n(10) %>%
+  ggplot(aes(tz,n, color = tz)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  labs(x = "Timezone",
+       y = "Count",
+       title = "Top 10 timezones",
+       color = "Timezone")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
