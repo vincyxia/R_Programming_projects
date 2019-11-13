@@ -1,4 +1,4 @@
-**PART 1**
+PART 1
 
 1. Load the titanic.csv data. 
 2. Get rid of the following columns: 'Name', 'Ticket', 'PassengerId', 'Cabin'. 
@@ -10,7 +10,7 @@
 9. Which port of origin (embarked column) had the highest average fare? Show/plot your results.  
 10. Is there a statistically significant difference in average fares between the genders?  
 
-**Part 2**. 
+Part 2
 
 1. Load the bitly data from data.gov as a data frame.  
 2. How many records are there?  
