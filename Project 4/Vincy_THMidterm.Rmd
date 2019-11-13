@@ -1,7 +1,7 @@
 ---
-title: "WanxinXia_THMidterm_MSBA2019Fall"
-author: "Wanxin Xia (wxia@scu.edu)"
-date: "11/11/2019"
+title: "XXXXXX"
+author: "XXXXXX"
+date: "XXXXXX"
 output: 
   html_document:
     number_sections: true
