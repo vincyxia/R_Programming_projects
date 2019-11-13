@@ -18,9 +18,11 @@ output:
 #Introduction of dataset
 Socioeconomic indicators like the poverty rate, population change, unemployment rate, and education levels vary across the nation. ERS has compiled the latest data on these measures into a mapping and data display/download application that allows users to identify and compare States and counties on these indicators.
 
-And today, we focus on Unemployment and median household income for the U.S., States, and counties, 2007-18.
-
 *Sources: [Unemployment - Bureau of Labor Statistics - LAUS data](https://www.bls.gov/lau/)*
+
+And today, we focus on Unemployment and median household income for the U.S., States, and counties, 2007-2018.
+
+This data frame contains 3275 observations and 56 variables where each row shows the employment conditions of every county in the U.S..  `Unemployment_rate_(year)` represents the unemployment rate during 2007-2017.
 
 #Preparation
 
