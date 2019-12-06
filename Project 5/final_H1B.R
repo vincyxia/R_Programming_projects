@@ -5,7 +5,6 @@ library(tidyverse)
 library(DT)
 library(leaflet)
 library(ggmap)
-# Team member: Wanxin Xia, Lanxin Zhang, Tianqing Feng
 
 # introdution: The original data is from Kaggle(https://www.kaggle.com/nsharan/h-1b-visa)
 # This dataset contains five year's worth of H-1B petition data, with approximately 3 million records overall. 
@@ -20,7 +19,7 @@ ui <- navbarPage("H1-B Visa Petitions Analysis",
                  tabPanel("Certified Jobs on Map",
                           br(),
                           leafletOutput("map", height="800px"),
-                          absolutePanel(top=20, left=70, selectInput("year", "YEAR", choices = c("2011","2012","2013","2014","2015","2016"),selected = "2016")),
+                          absolutePanel(top=100, left=70, selectInput("year", "YEAR", choices = c("2011","2012","2013","2014","2015","2016"),selected = "2016")),
                           br()
                  ),
                  
